@@ -1,31 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <!-- TextView para exibir o nome do pedido -->
-    <TextView
-        android:id="@+id/nome_pedido"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:textSize="18sp" />
+<androidx.constraintlayout.widget.ConstraintLayout  android:padding="20dp" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="wrap_content" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- View como linha de divisão -->
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@android:color/darker_gray"/>
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent" app:layout_constraintTop_toTopOf="parent" android:textSize="20dp" android:text="Titulo" android:id="@+id/list_row_title"/>
 
-    <!-- TextView para exibir o status do pedido -->
-    <TextView
-        android:id="@+id/status_pedido"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginLeft="6dp"
-        android:textSize="18sp" />
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent" android:text="Descrição" android:id="@+id/list_row_description" app:layout_constraintTop_toBottomOf="@id/list_row_title"/>
 
-</LinearLayout>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent" android:id="@+id/list_container_price" app:layout_constraintTop_toBottomOf="@id/list_row_description" android:orientation="horizontal">
+
+    </LinearLayout>
+
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" app:layout_constraintLeft_toLeftOf="parent" android:id="@+id/list_container_status" app:layout_constraintTop_toBottomOf="@id/list_container_price" android:orientation="horizontal">
+
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Status: "/>
+
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Value" android:id="@+id/status_pedido" android:gravity="left"/>
+
+    </LinearLayout>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

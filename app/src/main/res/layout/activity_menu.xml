@@ -72,46 +72,17 @@
             android:text="Ordens de Servico"
             android:textSize="22sp"
             android:textColor="@color/white" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-            <!-- TextView para exibir o pedido -->
-            <TextView
-                android:id="@+id/nome_pedido"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Pedido"
-                android:textSize="18sp"
-                android:background="#595959"
-                android:textColor="@color/white"
-                android:gravity="center"/>
 
-            <!-- TextView para exibir o status do pedido -->
-            <TextView
-                android:id="@+id/status_pedido"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Status"
-                android:textSize="18sp"
-                android:background="#595959"
-                android:textColor="@color/white"
-                android:gravity="center"/>
-        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ordemServico"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
-            android:background="@color/white" />
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
