@@ -41,7 +41,7 @@ class AddOrderActivity : AppCompatActivity() {
             if(nomeOrdem.isNotEmpty() && descricao.isNotEmpty()){
                 //objeto
                 val orderData = mapOf(
-                    "order" to nomeOrdem,
+                    "titulo" to nomeOrdem,
                     "descricao" to descricao,
                     "status" to "PENDENTE",
                     "comentario" to listOf("Comment 1", "Comment 2"),
