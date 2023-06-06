@@ -39,7 +39,7 @@ class OrderAdapter(
     inner class ViewHolder(itemView: View, onOrderClickListener: OnOrderClickListener) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val nomeTextView: TextView = itemView.findViewById(R.id.nome_pedido)
+        private val nomeTextView: TextView = itemView.findViewById(R.id.list_row_title)
         private val statusTextView: TextView = itemView.findViewById(R.id.status_pedido)
 
         private lateinit var onOrderClickListener: OnOrderClickListener
