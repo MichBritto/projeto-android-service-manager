@@ -41,13 +41,15 @@ class CadastroActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email, senha)
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
+                                val user = firebaseAuth.currentUser
+                                val uid = user?.uid
                                 //adicionar usuario ao database
                                 // Create a new user with a name and email
                                 val userData = hashMapOf(
                                     "nome" to nome,
                                     "email" to email,
                                 )
-                                db.collection("usuarios").add(userData).addOnSuccessListener{documentReference ->
+                                db.collection("usuarios").document(uid.toString()).set(userData).addOnSuccessListener{documentReference ->
                                     val snackbar = Snackbar.make(binding.root,"Conta criada com sucesso, você será redirecionado para a área de login.",Snackbar.LENGTH_LONG)
                                     snackbar.duration = 3000
                                     snackbar.show()
