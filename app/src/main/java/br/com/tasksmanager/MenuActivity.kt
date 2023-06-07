@@ -19,6 +19,7 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
     private lateinit var binding: ActivityMenuBinding
     private lateinit var adapter: OrderAdapter
     private var selected_item: Order? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
@@ -28,8 +29,9 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
             Order("heo3k3ds", "Order 2", "Description","Accepted"),
             Order("hfo3k3ms", "Order 3", "Description","Accepted")
         )
-
-
+        val email = intent.getStringExtra("email")
+        val nome = intent.getStringExtra("nome")
+        print("email: " + email  + "Nome:" + nome)
 
 
 
@@ -54,19 +56,22 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
                 startActivity(intent)
             }
         }
+        binding.editarPerfilButton.setOnClickListener {
+                val intent = Intent(this, ProfileChangeActivity::class.java)
+                startActivity(intent)
+        }
 
     }
 
     override fun onOrderClick(order: Order) {
         selected_item = order
     }
-
     // Get a reference to the node you want to retrieve data from
     val ordersRef = FirebaseDatabase.getInstance().getReference("ordens-servico")
 
     // Attach a listener to retrieve the data
     val ordersListener = object : ValueEventListener {
-         override fun onDataChange(dataSnapshot: DataSnapshot) {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
             // Iterate through the children of the node
             for (orderSnapshot in dataSnapshot.children) {
                 // Get the values of the order
@@ -80,6 +85,7 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
                 Log.d("Order", "Order: $order, Descrição: $descricao, Status: $status, Comentário: ${comentario?.joinToString()}, Data: $data")
             }
         }
+
 
         override fun onCancelled(databaseError: DatabaseError) {
             // Handle any errors
