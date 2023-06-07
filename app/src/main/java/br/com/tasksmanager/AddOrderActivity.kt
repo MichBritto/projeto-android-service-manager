@@ -65,7 +65,6 @@ class AddOrderActivity : AppCompatActivity() {
                     val snackbar = Snackbar.make(binding.root,errorMessage,Snackbar.LENGTH_LONG)
                     snackbar.duration = 3000
                     snackbar.show()
-                    Toast.makeText(this,errorMessage,Toast.LENGTH_LONG).show()
                 }
             }
             else {
