@@ -52,7 +52,7 @@ class OrderAdapter(
 
         fun bind(order: Order, isSelected: Boolean) {
             this.order = order
-            nomeTextView.text = order.getOrder()
+            nomeTextView.text = order.getTitulo()
             statusTextView.text = order.getStatus()
 
             itemView.setBackgroundColor(if (isSelected) Color.GRAY else Color.WHITE)

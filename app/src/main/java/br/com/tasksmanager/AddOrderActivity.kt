@@ -39,14 +39,16 @@ class AddOrderActivity : AppCompatActivity() {
             val nomeOrdem = binding.txtNome.text.toString()
             val descricao = binding.txtDescricao.text.toString()
             if(nomeOrdem.isNotEmpty() && descricao.isNotEmpty()){
+                val uid = FirebaseAuth.getInstance().currentUser?.uid
                 //objeto
                 val orderData = mapOf(
                     "titulo" to nomeOrdem,
                     "descricao" to descricao,
                     "status" to "PENDENTE",
-                    "comentario" to listOf("Comment 1", "Comment 2"),
-                    "data" to currentDate
+                    "data" to currentDate,
+                    "userUid" to uid
                 )
+
                 db.collection("ordens-servico").add(orderData).addOnSuccessListener{documentReference ->
                     val snackbar = Snackbar.make(binding.root,"Ordem de serviço registrada com sucesso, acompanhe o andamento em: 'Suas Ordens'.",Snackbar.LENGTH_LONG)
                     snackbar.duration = 3000

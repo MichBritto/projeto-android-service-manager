@@ -4,31 +4,29 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class Order {
-    private var id: String? = null
-    private var order: String? = null
+    private var titulo: String? = null
     private var descricao: String? = null
     private var status: String? = null
     private var comentario: Array<String>? = null
     private var data: String? = null
 
-    constructor(id: String?, order: String?, descricao: String?, status: String?) {
-        this.id = id
-        this.order = order
+    constructor(titulo: String?, descricao: String?, status: String?) {
+        this.titulo = titulo
         this.descricao = descricao
         this.status = status
         this.data = Calendar.getInstance().time.toString()
     }
 
-
-
-    fun getId(): String? {
-        return id
+    constructor(titulo: String?, descricao: String?, status: String?,data: String?) {
+        this.titulo = titulo
+        this.descricao = descricao
+        this.status = status
+        this.data = Calendar.getInstance().time.toString()
     }
 
-    fun getOrder(): String? {
-        return order
+    fun getTitulo(): String? {
+        return titulo;
     }
-
     fun getDescricao(): String? {
         return descricao
     }

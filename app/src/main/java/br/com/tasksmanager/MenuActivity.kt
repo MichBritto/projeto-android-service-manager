@@ -16,6 +16,15 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import model.Order
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.net.Uri
+import android.widget.EditText
+import com.google.android.gms.tasks.Tasks
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
     private lateinit var binding: ActivityMenuBinding
@@ -27,20 +36,6 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        println("Usuario logado com sucesso!")
-        val orders = listOf(
-            Order("heo3k3ms", "Order 1", "Description", "Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("heo3k3ds", "Order 2", "Description","Accepted"),
-            Order("hfo3k3ms", "Order 3", "Description","Accepted")
-        )
-
         val currentUser = auth.currentUser
         if (currentUser != null) {
             val userInfo = currentUser?.displayName
@@ -52,19 +47,33 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
             println("Nenhum usuário autenticado")
         }
 
-        adapter = OrderAdapter(this, orders, this)
+        val listaOrdensServico = mutableListOf<Order>()
+
+        runBlocking {
+            getOrdensServico(listaOrdensServico)
+
+            // Agora você pode acessar os itens adicionados na listaOrdensServico
+            listaOrdensServico.forEach { ordemServico ->
+                println(ordemServico.getTitulo())
+                println(ordemServico.getDescricao())
+                println(ordemServico.getStatus())
+            }
+        }
+
+        adapter = OrderAdapter(this, listaOrdensServico, this)
         binding.ordemServico.layoutManager = LinearLayoutManager(this)
         binding.ordemServico.adapter = adapter
 
         binding.addOrderButton.setOnClickListener {
-            Toast.makeText(this, "Clicou no botão", Toast.LENGTH_LONG).show()
+
             val intent = Intent(this, AddOrderActivity::class.java)
             startActivity(intent)
         }
 
         binding.editarPerfilButton.setOnClickListener{
-            val intent = Intent(this, ProfileChangeActivity::class.java)
-            startActivity(intent)
+            //val intent = Intent(this, ProfileChangeActivity::class.java)
+            //startActivity(intent)
+            showInputDialog()
         }
 
         binding.btnDetailOrder.setOnClickListener {
@@ -78,6 +87,16 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
             finish()
             startActivity(Intent(this, LoginActivity::class.java))
         }
+        /*binding.btnShare.setOnClickListener{
+            if (selected_item != null){
+                showInputDialog()
+            }
+            else{
+                Toast.makeText(this, "Selecione uma ordem", Toast.LENGTH_LONG).show()
+            }
+
+        }*/
+
 
     }
 
@@ -85,32 +104,55 @@ class MenuActivity : AppCompatActivity(), OrderAdapter.OnOrderClickListener {
         selected_item = order
     }
 
-    // Get a reference to the node you want to retrieve data from
-    val ordersRef = FirebaseDatabase.getInstance().getReference("ordens-servico")
+    private fun showInputDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Insira um numero de telefone")
 
-    // Attach a listener to retrieve the data
-    val ordersListener = object : ValueEventListener {
-         override fun onDataChange(dataSnapshot: DataSnapshot) {
-            // Iterate through the children of the node
-            for (orderSnapshot in dataSnapshot.children) {
-                // Get the values of the order
-                val order = orderSnapshot.child("order").getValue(String::class.java)
-                val descricao = orderSnapshot.child("descricao").getValue(String::class.java)
-                val status = orderSnapshot.child("status").getValue(String::class.java)
-                val comentario = orderSnapshot.child("comentario").getValue(Array<String>::class.java)
-                val data = orderSnapshot.child("data").getValue(String::class.java)
+        val input = EditText(this)
+        builder.setView(input)
 
-                // Do something with the order data
-                Log.d("Order", "Order: $order, Descrição: $descricao, Status: $status, Comentário: ${comentario?.joinToString()}, Data: $data")
-            }
+        builder.setPositiveButton("OK") { dialog: DialogInterface, _: Int ->
+            val phoneNumber = input.text.toString()
+
+            val message = "*Pedido ${selected_item?.getTitulo()}:* \r\n\r\n" +
+                    "Status -> ${selected_item?.getStatus()}"
+
+            val uri = Uri.parse("https://api.whatsapp.com/send?phone=$phoneNumber&text=$message")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+            dialog.dismiss()
         }
 
-        override fun onCancelled(databaseError: DatabaseError) {
-            // Handle any errors
-            Log.e("Error", "Error retrieving orders: $databaseError")
+        builder.setNegativeButton("Cancelar") { dialog: DialogInterface, _: Int ->
+            dialog.cancel()
+        }
+
+        builder.show()
+    }
+    suspend fun getOrdensServico(ordensServicoList: MutableList<Order>) {
+        // Nome da coleção
+        val collectionName = "ordens-servico"
+
+        // Obter a referência da coleção
+        val collectionRef = FirebaseFirestore.getInstance().collection(collectionName)
+
+        try {
+            withContext(Dispatchers.IO) {
+                // Obter os dados da coleção de forma assíncrona
+                val querySnapshot = collectionRef.get().await()
+
+                // Obter os dados
+                for (document in querySnapshot.documents) {
+                    val titulo = document.getString("titulo")
+                    val descricao = document.getString("descricao")
+                    val status = document.getString("status")
+                    val ordemServico = Order(titulo, descricao, status)
+                    ordensServicoList.add(ordemServico)
+                }
+            }
+        } catch (exception: Exception) {
+            // Tratar falha na obtenção dos dados
+            println("Erro ao obter os dados: $exception")
         }
     }
-
-
-
 }
